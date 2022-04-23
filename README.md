@@ -6,5 +6,5 @@ O principal projeto foi:
 - Algafood: O objetivo do projeto foi desenvolver um MVP de uma API para uma empresa de delivery de comida.
 
 Os projetos desenvolvidos foram:
-1 - Hello com o @Controller
-2 - Injeção de dependências
+1 - Hello com o @Controller /n
+2 - Injeção de dependências /n

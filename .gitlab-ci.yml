@@ -1,0 +1,139 @@
+include:
+  - project: 'tamo-marketplace/ci-cd-configs'
+    ref: master
+    file: 'pipelines/java-17-ci.yml'
+
+variables:
+  ARTIFACT_ID: ":seller"
+  NAMESPACE: backend
+  COVERAGE_FILE: target/jacoco/jacoco.xml
+
+install:
+  stage: install
+  extends:
+    - .install
+    - .rule:on_merging
+  artifacts:
+    paths:
+      - target/jacoco
+  after_script:
+    - ls -la target/jacoco
+
+coverage:
+  variables:
+    COVERAGE_FILE: "target/jacoco/jacoco.xml"
+    APPLICATION_NAME: "${CI_PROJECT_NAME}"
+  extends:
+    - .coverage
+  script:
+    - validate_jacoco_metrics $COVERAGE_FILE
+
+build:
+  stage: build
+  extends:
+    - .build
+  only:
+    - develop
+    - staging
+    - master
+    - uat
+  artifacts:
+    paths:
+      - target/*.jar
+
+package:docker:
+  extends:
+    - .docker:tamo-registry
+    - .docker:build
+  only:
+    - develop
+    - staging
+    - master
+    - uat
+  dependencies:
+    - build
+  stage: package
+
+deploy:develop:
+  variables:
+    NAME: seller
+  stage: deploy
+  only:
+    - develop
+  environment:
+    name: tamo-development
+  extends:
+    - .deploy
+    - .deploy:develop
+
+post-deploy:develop:
+  extends:
+    - .create_mr
+  only:
+    - develop
+  stage: post-deploy
+  variables:
+    TARGET_BRANCH: staging
+
+deploy:uat:
+  stage: deploy
+  variables:
+    NAME: seller
+  only:
+    - uat
+  extends:
+    - .deploy
+    - .deploy:uat
+
+deploy:staging:
+  stage: deploy
+  variables:
+    NAME: seller
+  only:
+    - staging
+  extends:
+    - .deploy
+    - .deploy:staging
+
+post-deploy:staging:
+  extends:
+    - .create_mr
+  only:
+    - staging
+  stage: post-deploy
+  variables:
+    TARGET_BRANCH: master
+
+deploy:prod:
+  stage: deploy
+  variables:
+    NAME: seller
+  only:
+    - master
+  extends:
+    - .deploy
+    - .deploy:prod
+
+preview:playground:
+  stage: preview
+  variables:
+    TRIGGER_PREVIEW: 'playground'
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+  trigger:
+    include: child-gitlab-ci.yml
+    strategy: depend
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+  when: manual
+
+e2e:dev:
+  stage: e2e
+  variables:
+    TRIGGER_E2E: 'dev'
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+  trigger:
+    include: child-gitlab-ci.yml
+    strategy: depend
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+  when: manual

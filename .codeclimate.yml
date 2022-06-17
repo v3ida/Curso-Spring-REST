@@ -1,0 +1,11 @@
+engines:
+  sonar-java:
+    enabled: true
+    channel: beta
+
+exclude_paths:
+  - "scripts/"
+  - ".github/"
+  - "gradle/"
+  - "**/test/"
+  - "infrastructure/"

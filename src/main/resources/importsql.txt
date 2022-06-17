@@ -1,0 +1,26 @@
+insert into cozinha (id, nome) values (1, 'Tailandesa');
+insert into cozinha (id, nome) values (2, 'Indiana');
+insert into cozinha (id, nome) values (3, 'Chinesa');
+
+insert into estado (id, nome) values (1, 'Bahia');
+insert into estado (id, nome) values (2, 'Ceará');
+insert into estado (id, nome) values (3, 'Minas Gerais');
+
+insert into cidade (id, nome, estado_id) values (1, 'Salvador', 1);
+insert into cidade (id, nome, estado_id) values (2, 'Belo Horizonte', 2);
+insert into cidade (id, nome, estado_id) values (3, 'Fortaleza', 2);
+
+insert into restaurante (cozinha_id, nome, taxa_frete, data_cadastro, data_atualizacao, endereco_cep, endereço_logradouro, endereço_numero, endereço_complemento, endereço_bairro) values (1, 'Thai Gourmet', 10, utc_timestamp, utc_timestamp, '45530000', 'Rua X', '45', 'Centro');
+insert into restaurante (cozinha_id, nome, taxa_frete, data_cadastro, data_atualizacao,) values (2, 'Thai Delivery', 9.50,  utc_timestamp, utc_timestamp);
+insert into restaurante (cozinha_id, nome, taxa_frete, data_cadastro, data_atualizacao,) values (3, 'China In Box', 8,  utc_timestamp, utc_timestamp);
+
+insert into produto (id, produto_descricao, produto_preco, produto_ativo) values (1, 'produto 1', 15.30, true);
+insert into produto (id, produto_descricao, produto_preco, produto_ativo) values (2, 'produto 2', 10, false);
+
+
+insert into forma_pagamento (id, descricao) values (1, 'Dinheiro');
+insert into forma_pagamento (id, descricao) values (2, 'Cartão de Crédito');
+insert into forma_pagamento (id, descricao) values (3, 'Cartão de Débito');
+
+insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
+insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
